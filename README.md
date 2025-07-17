@@ -6,24 +6,27 @@
 
 ## 📚 Table of Contents
 
-- [Overview](#overview)
-- [Lab Setup](#lab-setup)
-- [Windows 11 Vulnerable Configuration](#windows-11-vulnerable-configuration)
-- [Logging Configuration](#logging-configuration)
-- [Installing Sysmon](#installing-sysmon)
-- [Installing Splunk](#installing-splunk)
-- [Attack Simulation (Kali Linux)](#attack-simulation-kali-linux)
-    - [Lateral Movement with impacket-psexec](#1️⃣-lateral-movement-with-impacket-psexec)
-    - [Accessing Admin Shares with smbclient](#2️⃣-accessing-admin-shares-with-smbclient)
-- [Detection & Analysis in Splunk](#detection--analysis-in-splunk)
-    - [Detect Remote Logon (4624)](#detect-remote-logon-4624)
-    - [Detect Process Creation (4688)](#detect-process-creation-4688)
-    - [Correlate Lateral Movement and Execution](#correlate-lateral-movement-and-execution)
-- [Attack Mapping & Interpretation](#attack-mapping--interpretation)
-- [Artifacts](#artifacts)
-- [Conclusion](#conclusion)
-- [Credits & Tools](#credits--tools)
-- [Contact](#contact)
+- [🚨 Lateral Movement \& Remote Command Execution Detection Lab](#-lateral-movement--remote-command-execution-detection-lab)
+	- [📚 Table of Contents](#-table-of-contents)
+	- [📝 Overview](#-overview)
+	- [🧰 Lab Setup](#-lab-setup)
+	- [⚙️ Windows 11 Vulnerable Configuration](#️-windows-11-vulnerable-configuration)
+- [Disable Defender](#disable-defender)
+- [Disable Firewall](#disable-firewall)
+- [Enable Admin Shares](#enable-admin-shares)
+- [Enable command line logging](#enable-command-line-logging)
+	- [🐾 Installing Sysmon](#-installing-sysmon)
+	- [📈 Installing Splunk](#-installing-splunk)
+	- [🛠️ Attack Simulation (Kali Linux)](#️-attack-simulation-kali-linux)
+	- [🔎 Detection \& Analysis in Splunk](#-detection--analysis-in-splunk)
+	- [🎯 Attack Mapping \& Interpretation](#-attack-mapping--interpretation)
+	- [MITRE ATT\&CK Mapping](#mitre-attck-mapping)
+	- [📂 Artifacts](#-artifacts)
+	- [🔮 Next Steps \& Future Improvements](#-next-steps--future-improvements)
+	- [➕ How to Contribute](#-how-to-contribute)
+	- [🏁 Conclusion](#-conclusion)
+	- [🔗 Credits \& Tools](#-credits--tools)
+	- [📧 Connect with me:](#-connect-with-me)
 
 ---
 
@@ -111,7 +114,7 @@ AuditPol /set /subcategory:"Process Creation" /success:enable
 # Enable command line logging
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit" /v ProcessCreationIncludeCmdLine_Enabled /t REG_DWORD /d 1 /f
 
-🐾 Installing Sysmon
+## 🐾 Installing Sysmon
 
 Download Sysmon from:
 https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
@@ -126,7 +129,9 @@ Verify Sysmon is running:
 
 Get-Process sysmon64
 
-📈 Installing Splunk
+![Running Sysmon via PowerShell](screenshots/Running_Sysmon_via_Powershell_as_Admin.png)
+
+## 📈 Installing Splunk
 	1.	Download Splunk Enterprise (Trial):
 
 https://www.splunk.com/en_us/download/splunk-enterprise.html
@@ -143,7 +148,7 @@ https://www.splunk.com/en_us/download/splunk-enterprise.html
 
 ⸻
 
-🛠️ Attack Simulation (Kali Linux)
+## 🛠️ Attack Simulation (Kali Linux)
 
 1️⃣ Lateral Movement with impacket-psexec
 
@@ -160,7 +165,7 @@ Generates:
 	•	4624 (Logon Type 3) – SMB login
 	•	5140 – Share access event
 
-🔎 Detection & Analysis in Splunk
+## 🔎 Detection & Analysis in Splunk
 
 Detect Remote Logon (4624)
 
@@ -178,21 +183,21 @@ index=main sourcetype=WinEventLog:Security (EventCode=4624 OR EventCode=4688)
 | eval event=case(EventCode==4624,"Network Logon", EventCode==4688,"Process Created")
 | table _time event Account_Name Source_Network_Address New_Process_Name Process_Command_Line Parent_Process_Name
 
-🎯 Attack Mapping & Interpretation
+## 🎯 Attack Mapping & Interpretation
 
 Event ID	Meaning	Attack Phase
 4624 (Type 3)	Remote network logon	Lateral Movement
 4688	Command execution (cmd.exe)	Post-exploitation
 5140	SMB share accessed	Recon / Access
 
-MITRE ATT&CK Mapping
+## MITRE ATT&CK Mapping
 
 Tactic	Technique
 Lateral Movement	T1021.002 - SMB/Windows Admin Shares
 Execution	T1569.002 - Service Execution
 Command Execution	T1059.003 - Windows Command Shell
 
-📂 Artifacts
+## 📂 Artifacts
 
 File/Folder	Description
 README.md	Full lab documentation
@@ -200,7 +205,7 @@ screenshots/	Attack and detection screenshots
 splunk_queries.txt	List of Splunk queries used
 sysmonconfig.xml	Sysmon configuration (if customized)
 
-🔮 Next Steps & Future Improvements
+## 🔮 Next Steps & Future Improvements
 
 This lab is an initial step towards building a more comprehensive security operations and detection portfolio.
 Here are the planned next steps and possible improvements:
@@ -235,7 +240,7 @@ If you have suggestions, feel free to open an issue or collaborate!
 
 ⸻
 
-➕ How to Contribute
+## ➕ How to Contribute
 	•	Fork the repo and submit a pull request
 	•	Open issues for feature suggestions
 	•	Share ideas for new attack-detection scenarios
@@ -243,7 +248,7 @@ If you have suggestions, feel free to open an issue or collaborate!
 ⸻
 
 
-🏁 Conclusion
+## 🏁 Conclusion
 
 This lab provides a practical, end-to-end scenario for detecting lateral movement and remote code execution using Windows logs, Sysmon, and Splunk.
 
@@ -254,7 +259,7 @@ Use this project to:
 
 ⸻
 
-🔗 Credits & Tools
+## 🔗 Credits & Tools
 	•	Impacket – https://github.com/SecureAuthCorp/impacket
 	•	Sysmon – https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
 	•	Splunk – https://www.splunk.com/
@@ -262,7 +267,7 @@ Use this project to:
 
 ⸻
 
-📧 Connect with me:
+## 📧 Connect with me:
 
 Feel free to connect with me for collaboration or feedback.
 
