@@ -1,0 +1,40 @@
+# Splunk Detection Queries for Lateral Movement and Execution Lab
+# Author: [Ton Nom ou Ton GitHub]
+# Date: [Date du projet]
+
+------------------------------------------------------------
+1️⃣ Detect Remote Logon (Event ID 4624 - Logon Type 3)
+------------------------------------------------------------
+
+index=main sourcetype=WinEventLog:Security EventCode=4624 Logon_Type=3
+| table _time Account_Name Source_Network_Address Workstation_Name Authentication_Package
+| sort _time desc
+
+# Description:
+# Detects remote network logons indicating lateral movement via SMB, PsExec, or similar methods.
+
+------------------------------------------------------------
+2️⃣ Detect Process Creation (Event ID 4688)
+------------------------------------------------------------
+
+index=main sourcetype=WinEventLog:Security EventCode=4688
+| table _time Account_Name New_Process_Name Process_Command_Line Parent_Process_Name
+| sort _time desc
+
+# Description:
+# Detects process creations, useful for identifying remote command executions like cmd.exe, powershell.exe, or service executables.
+
+------------------------------------------------------------
+3️⃣ Correlate Lateral Movement and Remote Command Execution
+------------------------------------------------------------
+
+index=main sourcetype=WinEventLog:Security (EventCode=4624 OR EventCode=4688)
+| eval EventType=case(EventCode==4624,"Remote Logon", EventCode==4688,"Process Created")
+| table _time EventType Account_Name Source_Network_Address New_Process_Name Process_Command_Line Parent_Process_Name
+| sort _time desc
+
+# Description:
+# Correlates remote logons with process creations to identify potential lateral movement followed by execution.
+
+------------------------------------------------------------
+# End of Splunk Queries
