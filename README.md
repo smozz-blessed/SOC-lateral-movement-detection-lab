@@ -6,18 +6,17 @@
 
 ## 📚 Table of Contents
 
-- [� Lateral Movement \& Remote Command Execution Detection Lab](#-lateral-movement--remote-command-execution-detection-lab)
+- [🚨 Lateral Movement \& Remote Command Execution Detection Lab](#-lateral-movement--remote-command-execution-detection-lab)
 	- [📚 Table of Contents](#-table-of-contents)
 	- [📝 Overview](#-overview)
 	- [🧰 Lab Setup](#-lab-setup)
-		- [⚙️ Windows 11 Installation (Victim Machine)](#️-windows-11-installation-victim-machine)
-		- [🛠️ Kali Linux Setup (Attacker Machine)](#️-kali-linux-setup-attacker-machine)
+	- [⚙️ Windows 11 Installation (Victim Machine)](#️-windows-11-installation-victim-machine)
+	- [🛠️ Kali Linux Setup (Attacker Machine)](#️-kali-linux-setup-attacker-machine)
 - [Disable Defender](#disable-defender)
 - [Disable Firewall](#disable-firewall)
 - [Enable Admin Shares](#enable-admin-shares)
 - [Enable auditing policies](#enable-auditing-policies)
 - [Enable command line logging](#enable-command-line-logging)
-	- [🚀 **Prêt à copier-coller directement dans ton `README.md`**](#-prêt-à-copier-coller-directement-dans-ton-readmemd)
 
 ---
 
@@ -36,13 +35,13 @@ The detection is performed using **Splunk** and **Sysmon**, creating a realistic
 | **Windows 11 VM** | Victim (Splunk, Sysmon, Logging configured) |
 | **Splunk**        | Log Collection and Analysis         |
 
-### ⚙️ Windows 11 Installation (Victim Machine)
+## ⚙️ Windows 11 Installation (Victim Machine)
 
 1. Download Windows 11 ISO from Microsoft.
 2. Create a Virtual Machine using VirtualBox, VMware, or UTM with Bridged or Host-Only Networking.
 3. Set up Administrator user, disable UAC popups, configure networking, and install Remote Desktop if needed.
 
-### 🛠️ Kali Linux Setup (Attacker Machine)
+## 🛠️ Kali Linux Setup (Attacker Machine)
 
 1. Download Kali ISO from [kali.org](https://kali.org).
 2. Update Kali:
@@ -245,16 +244,3 @@ Use this project to:
 
 LinkedIn
 GitHub
-
----
-
-## 🚀 **Prêt à copier-coller directement dans ton `README.md`**
-
-- Les titres sont hiérarchisés proprement  
-- Les liens du sommaire fonctionneront parfaitement  
-- Les captures doivent être placées dans `screenshots/` et référencées comme prévu
-
----
-
-Si tu veux, je peux t’aider à faire un **post LinkedIn ou un badge visuel** pour mettre en avant ton projet.  
-Veux-tu ça ?
