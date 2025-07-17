@@ -6,27 +6,18 @@
 
 ## 📚 Table of Contents
 
-- [🚨 Lateral Movement \& Remote Command Execution Detection Lab](#-lateral-movement--remote-command-execution-detection-lab)
+- [� Lateral Movement \& Remote Command Execution Detection Lab](#-lateral-movement--remote-command-execution-detection-lab)
 	- [📚 Table of Contents](#-table-of-contents)
 	- [📝 Overview](#-overview)
 	- [🧰 Lab Setup](#-lab-setup)
-	- [⚙️ Windows 11 Vulnerable Configuration](#️-windows-11-vulnerable-configuration)
+		- [⚙️ Windows 11 Installation (Victim Machine)](#️-windows-11-installation-victim-machine)
+		- [🛠️ Kali Linux Setup (Attacker Machine)](#️-kali-linux-setup-attacker-machine)
 - [Disable Defender](#disable-defender)
 - [Disable Firewall](#disable-firewall)
 - [Enable Admin Shares](#enable-admin-shares)
+- [Enable auditing policies](#enable-auditing-policies)
 - [Enable command line logging](#enable-command-line-logging)
-	- [🐾 Installing Sysmon](#-installing-sysmon)
-	- [📈 Installing Splunk](#-installing-splunk)
-	- [🛠️ Attack Simulation (Kali Linux)](#️-attack-simulation-kali-linux)
-	- [🔎 Detection \& Analysis in Splunk](#-detection--analysis-in-splunk)
-	- [🎯 Attack Mapping \& Interpretation](#-attack-mapping--interpretation)
-	- [MITRE ATT\&CK Mapping](#mitre-attck-mapping)
-	- [📂 Artifacts](#-artifacts)
-	- [🔮 Next Steps \& Future Improvements](#-next-steps--future-improvements)
-	- [➕ How to Contribute](#-how-to-contribute)
-	- [🏁 Conclusion](#-conclusion)
-	- [🔗 Credits \& Tools](#-credits--tools)
-	- [📧 Connect with me:](#-connect-with-me)
+	- [🚀 **Prêt à copier-coller directement dans ton `README.md`**](#-prêt-à-copier-coller-directement-dans-ton-readmemd)
 
 ---
 
@@ -37,61 +28,40 @@ The detection is performed using **Splunk** and **Sysmon**, creating a realistic
 
 ---
 
-🔧 Prerequisites
-
-To successfully build and run this lab, ensure you have the following minimum hardware and software setup:
-
-💻 Hardware Requirements
-
-Resource	Minimum	Recommended
-CPU	4 Cores	6+ Cores (for smoother virtualization)
-RAM	8 GB	12–16 GB (for running multiple VMs)
-Disk Space	60 GB free	100+ GB (due to VM snapshots, logs, Splunk data)
-
-🖥️ Software Requirements
-	•	Virtualization Software
-	•	VirtualBox, VMware Workstation, VMware Fusion, or UTM (for Apple Silicon)
-	•	Operating Systems
-	•	Windows 11 VM (Victim)
-	•	Kali Linux VM (Attacker)
-	•	Splunk Enterprise (Free Trial or Developer Edition)
-	•	Sysmon for detailed Windows event logging
-	•	Sysinternals Sysmon
-
-🌐 Networking
-	•	Both VMs must be on the same network segment (use Bridged or Host-Only networking)
-	•	Kali must be able to reach Windows over SMB (port 445) and RPC
-
----
-
 ## 🧰 Lab Setup
 
-| Machine | Role |
-|----------|------|
-| **Kali Linux** | Attacker (Impacket, smbclient, CrackMapExec, etc.) |
-| **Windows 11 VM** | Victim (Splunk, Sysmon, logging configured) |
-| **Splunk Enterprise** | Log collection and analysis |
+| Machine           | Role                                |
+|------------------|-------------------------------------|
+| **Kali Linux**    | Attacker (Impacket, smbclient, CrackMapExec) |
+| **Windows 11 VM** | Victim (Splunk, Sysmon, Logging configured) |
+| **Splunk**        | Log Collection and Analysis         |
 
-⚙️ Windows 11 Installation (Victim Machine)
-	1.	Download Windows 11 ISO from Microsoft.
-	2.	Create a Virtual Machine using VirtualBox, VMware or UTM with bridged or host-only networking.
-	3.	Set up Administrator user, disable UAC popups, configure networking, and install Remote Desktop if needed.
+### ⚙️ Windows 11 Installation (Victim Machine)
 
-🛠️ Kali Linux Setup (Attacker Machine)
-	1.	Download Kali ISO from kali.org.
-        2.     Update and upgrade Kali: 
+1. Download Windows 11 ISO from Microsoft.
+2. Create a Virtual Machine using VirtualBox, VMware, or UTM with Bridged or Host-Only Networking.
+3. Set up Administrator user, disable UAC popups, configure networking, and install Remote Desktop if needed.
+
+### 🛠️ Kali Linux Setup (Attacker Machine)
+
+1. Download Kali ISO from [kali.org](https://kali.org).
+2. Update Kali:
+
+```bash
 sudo apt update && sudo apt upgrade -y
-	3.	Install Impacket & Tools:
+
+	3.	Install attack tools:
+
 sudo apt install impacket crackmapexec smbclient
-	4.	Set networking in VM to communicate with Windows (bridged, NAT or host-only).
 
----
+	4.	Configure networking to communicate with the Windows VM.
 
-## ⚙️ Windows 11 Vulnerable Configuration
+⸻
 
-**Disable security features to simulate a vulnerable environment:**
+⚙️ Windows 11 Vulnerable Configuration
 
-```powershell
+Disable security features to simulate a vulnerable environment:
+
 # Disable Defender
 Set-MpPreference -DisableRealtimeMonitoring $true
 Set-MpPreference -DisableBehaviorMonitoring $true
@@ -104,68 +74,70 @@ Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 # Enable Admin Shares
 reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
 
-🔍 Logging Configuration
-
-Enable auditing policies:
-
+# Enable auditing policies
 AuditPol /set /subcategory:"Logon" /success:enable /failure:enable
 AuditPol /set /subcategory:"Process Creation" /success:enable
 
 # Enable command line logging
 reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit" /v ProcessCreationIncludeCmdLine_Enabled /t REG_DWORD /d 1 /f
 
-## 🐾 Installing Sysmon
 
-Download Sysmon from:
+⸻
+
+🐾 Installing Sysmon
+
+Download Sysmon:
 https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
 
-Download a pre-configured sysmonconfig.xml from Sysmon Modular.
+Use a pre-configured sysmonconfig.xml from Sysmon Modular.
 
-Open PowerShell as Administrator and run: cd "C:\Users\Downloads\sysmon"
+Run as Administrator:
 
+cd "C:\Users\Downloads\sysmon"
 .\sysmon64.exe -i sysmonconfig.xml
 
 Verify Sysmon is running:
 
 Get-Process sysmon64
 
-![Running Sysmon via PowerShell](screenshots/Running_Sysmon_via_Powershell_as_Admin.png)
 
-## 📈 Installing Splunk
-	1.	Download Splunk Enterprise (Trial):
+⸻
 
+📈 Installing Splunk
+	1.	Download Splunk Enterprise:
 https://www.splunk.com/en_us/download/splunk-enterprise.html
-
 	2.	Configure Splunk Inputs:
 
 	•	WinEventLog: Security
 	•	WinEventLog: System
 	•	WinEventLog: Application
 	•	Microsoft-Windows-PowerShell/Operational
-	•	Sysmon Event Logs (if installed)
+	•	Sysmon Logs
 
-	3.	Verify event ingestion into Splunk
+	3.	Verify that logs are properly ingested into Splunk.
 
 ⸻
 
-## 🛠️ Attack Simulation (Kali Linux)
+🛠️ Attack Simulation (Kali Linux)
 
 1️⃣ Lateral Movement with impacket-psexec
 
-impacket-psexec WORKGROUP/Administrator@192.168.56.10 -p <VICTIM_PORT_ex:445>
+impacket-psexec WORKGROUP/Administrator@192.168.56.10 -p <password>
 
 Generates:
-	•	4624 (Logon Type 3) – Remote login
+	•	Event ID 4624 (Logon Type 3) – Remote logon
 
-2️⃣ Accessing Admin Shares with smbclient
+2️⃣ Access Admin Shares with smbclient
 
-smbclient \\\\<Windows_IP>\\C$ -U Administrator
+smbclient \\\\192.168.56.10\\C$ -U Administrator
 
 Generates:
-	•	4624 (Logon Type 3) – SMB login
-	•	5140 – Share access event
+	•	Event ID 4624 (Logon Type 3) – SMB logon
+	•	Event ID 5140 – Share access
 
-## 🔎 Detection & Analysis in Splunk
+⸻
+
+🔎 Detection & Analysis in Splunk
 
 Detect Remote Logon (4624)
 
@@ -183,21 +155,27 @@ index=main sourcetype=WinEventLog:Security (EventCode=4624 OR EventCode=4688)
 | eval event=case(EventCode==4624,"Network Logon", EventCode==4688,"Process Created")
 | table _time event Account_Name Source_Network_Address New_Process_Name Process_Command_Line Parent_Process_Name
 
-## 🎯 Attack Mapping & Interpretation
+
+⸻
+
+🎯 Attack Mapping & Interpretation
 
 Event ID	Meaning	Attack Phase
 4624 (Type 3)	Remote network logon	Lateral Movement
 4688	Command execution (cmd.exe)	Post-exploitation
 5140	SMB share accessed	Recon / Access
 
-## MITRE ATT&CK Mapping
+MITRE ATT&CK Mapping
 
 Tactic	Technique
 Lateral Movement	T1021.002 - SMB/Windows Admin Shares
 Execution	T1569.002 - Service Execution
 Command Execution	T1059.003 - Windows Command Shell
 
-## 📂 Artifacts
+
+⸻
+
+📂 Artifacts
 
 File/Folder	Description
 README.md	Full lab documentation
@@ -205,72 +183,78 @@ screenshots/	Attack and detection screenshots
 splunk_queries.txt	List of Splunk queries used
 sysmonconfig.xml	Sysmon configuration (if customized)
 
-## 🔮 Next Steps & Future Improvements
 
-This lab is an initial step towards building a more comprehensive security operations and detection portfolio.
-Here are the planned next steps and possible improvements:
+⸻
 
-🛠️ Planned Enhancements
-	•	Add Real-Time Alerting
-Configure Splunk alert rules to generate real-time notifications (email/webhook) for lateral movement and suspicious logons.
-	•	Integrate MITRE ATT&CK Tags in Splunk Dashboards
-Create custom dashboards that map the detected events directly to MITRE ATT&CK techniques.
-	•	Use Splunk Enterprise Security or Open-Source SIEM Alternatives
-Expand detection capabilities with pre-built correlation rules (if licensing permits).
-	•	Include PowerShell Attack Simulation
-Simulate Invoke-Mimikatz or remote PowerShell Remoting scenarios and analyze the logs generated.
-	•	Expand to Cloud Monitoring
-Integrate Azure or AWS event logs to simulate hybrid environment monitoring.
-	•	Automate Lab Deployment
-Use Terraform, Vagrant, or Ansible to automate lab creation for faster re-deployment.
-	•	Contribute Sigma Rules
-Convert the Splunk detection queries into Sigma format for SOC interoperability.
+🔮 Next Steps & Future Improvements
+
+This lab is an initial step toward building a comprehensive detection engineering portfolio.
+
+🛠️ Planned Enhancements:
+	•	Real-Time Alerting
+Configure Splunk alerts for lateral movement detection.
+	•	MITRE ATT&CK Integration
+Map events to ATT&CK directly in Splunk dashboards.
+	•	Broader SIEM Use
+Try Splunk Enterprise Security or open-source SIEM tools.
+	•	PowerShell Attack Simulation
+Simulate remote PowerShell attacks and analyze logs.
+	•	Hybrid Cloud Monitoring
+Integrate Azure or AWS logs.
+	•	Automation
+Use Terraform, Vagrant, or Ansible to automate the lab deployment.
+	•	Sigma Rule Contribution
+Convert detections to Sigma for community sharing.
 
 ⸻
 
 🧪 Learning Focus Areas
-	•	Advanced Splunk SPL query development
-	•	Detection engineering best practices
-	•	Blue Team vs Red Team operational scenarios
-	•	Threat hunting techniques based on endpoint telemetry
+	•	Advanced Splunk SPL Query Development
+	•	Detection Engineering & Blue Team Operations
+	•	Threat Hunting Based on Telemetry
+	•	Red Team vs Blue Team Simulation
 
 ⸻
 
-If you have suggestions, feel free to open an issue or collaborate!
-
-⸻
-
-## ➕ How to Contribute
+➕ How to Contribute
 	•	Fork the repo and submit a pull request
-	•	Open issues for feature suggestions
-	•	Share ideas for new attack-detection scenarios
+	•	Open issues for suggestions
+	•	Share new detection use cases or scenarios
 
 ⸻
 
+🏁 Conclusion
 
-## 🏁 Conclusion
-
-This lab provides a practical, end-to-end scenario for detecting lateral movement and remote code execution using Windows logs, Sysmon, and Splunk.
+This lab provides a practical end-to-end scenario for detecting lateral movement and remote code execution using Windows logs, Sysmon, and Splunk.
 
 Use this project to:
-	•	Train as a SOC Analyst
+	•	Train for SOC Analyst roles
 	•	Build your cybersecurity portfolio
 	•	Understand real-world attack detection pipelines
 
 ⸻
 
-## 🔗 Credits & Tools
-	•	Impacket – https://github.com/SecureAuthCorp/impacket
-	•	Sysmon – https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
-	•	Splunk – https://www.splunk.com/
-	
+🔗 Credits & Tools
+	•	Impacket
+	•	Sysmon
+	•	Splunk
 
 ⸻
 
-## 📧 Connect with me:
+📧 Connect with me
 
-Feel free to connect with me for collaboration or feedback.
+LinkedIn
+GitHub
 
-https://www.linkedin.com/in/ismael-jr-coulibaly-85b680240
+---
 
-https://github.com/smozz-blessed
+## 🚀 **Prêt à copier-coller directement dans ton `README.md`**
+
+- Les titres sont hiérarchisés proprement  
+- Les liens du sommaire fonctionneront parfaitement  
+- Les captures doivent être placées dans `screenshots/` et référencées comme prévu
+
+---
+
+Si tu veux, je peux t’aider à faire un **post LinkedIn ou un badge visuel** pour mettre en avant ton projet.  
+Veux-tu ça ?
