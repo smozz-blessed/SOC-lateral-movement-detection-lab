@@ -1,5 +1,10 @@
 # 👨‍💻 SOC Lateral Movement Detection Lab 🚀
 
+![GitHub stars](https://img.shields.io/github/stars/smozz-blessed/SOC-lateral-movement-detection-lab.svg)
+![GitHub forks](https://img.shields.io/github/forks/smozz-blessed/SOC-lateral-movement-detection-lab.svg)
+![GitHub issues](https://img.shields.io/github/issues/smozz-blessed/SOC-lateral-movement-detection-lab.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/smozz-blessed/SOC-lateral-movement-detection-lab.svg)
+
 ## 📚 Table of Contents
 
 1. [Introduction](#introduction)
