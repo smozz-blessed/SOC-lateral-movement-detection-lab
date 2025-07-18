@@ -35,7 +35,7 @@ This project simulates a lateral movement and remote command execution attack fr
 | **Operating Systems**       | Windows 11 & Kali Linux                          |
 | **Logging Tools**           | Splunk and Sysmon setup files                    |
 | **Network**                 | Both VMs must be in the same local network       |
-⸻
+
 
 ## Network Topology
 
