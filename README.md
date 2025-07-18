@@ -2,29 +2,22 @@
 
 ## 📚 Table of Contents
 
-- [👨‍💻 SOC Lateral Movement Detection Lab 🚀](#-soc-lateral-movement-detection-lab-)
-	- [📚 Table of Contents](#-table-of-contents)
-	- [Introduction](#introduction)
-	- [Prerequisites](#prerequisites)
-	- [Network Topology](#network-topology)
-	- [Step 1: Setting Up Virtual Machines](#step-1-setting-up-virtual-machines)
-		- [1.1 Kali Linux (Attacker)](#11-kali-linux-attacker)
-		- [1.2 Windows 11 (Victim)](#12-windows-11-victim)
-	- [Step 2: Windows 11 Vulnerable Configuration](#step-2-windows-11-vulnerable-configuration)
-	- [Step 3: Installing Sysmon](#step-3-installing-sysmon)
-	- [Step 4: Installing Splunk](#step-4-installing-splunk)
-	- [Step 5: Attack Simulation (Kali Linux)](#step-5-attack-simulation-kali-linux)
-	- [Step 6: Detecting \& Analyzing Logs in Splunk](#step-6-detecting--analyzing-logs-in-splunk)
-		- [Detect Remote Logon (4624)](#detect-remote-logon-4624)
-		- [Detect Process Creation (4688)](#detect-process-creation-4688)
-		- [Correlate Lateral Movement \& Execution](#correlate-lateral-movement--execution)
-	- [Attack Mapping \& Interpretation](#attack-mapping--interpretation)
-	- [Artifacts](#artifacts)
-	- [Next Steps \& Future Improvements](#next-steps--future-improvements)
-	- [How to Contribute](#how-to-contribute)
-	- [Conclusion](#conclusion)
-		- [Credits \& Tools](#credits--tools)
-		- [Connect with Me](#connect-with-me)
+1. [Introduction](#introduction)
+2. [Prerequisites](#prerequisites)
+3. [Network Topology](#network-topology)
+4. [Step 1: Setting Up Virtual Machines](#step-1-setting-up-virtual-machines)
+5. [Step 2: Windows 11 Vulnerable Configuration](#step-2-windows-11-vulnerable-configuration)
+6. [Step 3: Installing Sysmon](#step-3-installing-sysmon)
+7. [Step 4: Installing Splunk](#step-4-installing-splunk)
+8. [Step 5: Attack Simulation (Kali Linux)](#step-5-attack-simulation-kali-linux)
+9. [Step 6: Detecting & Analyzing Logs in Splunk](#step-6-detecting--analyzing-logs-in-splunk)
+10. [Attack Mapping & Interpretation](#attack-mapping--interpretation)
+11. [Artifacts](#artifacts)
+12. [Next Steps & Future Improvements](#next-steps--future-improvements)
+13. [How to Contribute](#how-to-contribute)
+14. [Conclusion](#conclusion)
+15. [Credits & Tools](#credits--tools)
+16. [Connect with Me](#connect-with-me)
 
 ⸻
 
@@ -35,13 +28,13 @@ This project simulates a lateral movement and remote command execution attack fr
 
 ## Prerequisites
 
-Requirement Description
-RAM At least 12GB (preferably 16GB+)
-Virtualization Software VMware, VirtualBox, or UTM (Mac M1/M2)
-Operating Systems Windows 11 & Kali Linux
-Logging Tools Splunk Enterprise & Sysmon
-Network Both VMs must be in the same local network
-
+| Requirement                 | Description                                       |
+|----------------------------|---------------------------------------------------|
+| **RAM**                     | At least 12GB (preferably 16GB+) to run VMs      |
+| **Virtualization Software** | VMware, VirtualBox, or UTM (Mac M1/M2)           |
+| **Operating Systems**       | Windows 11 & Kali Linux                          |
+| **Logging Tools**           | Splunk and Sysmon setup files                    |
+| **Network**                 | Both VMs must be in the same local network       |
 ⸻
 
 ## Network Topology
@@ -50,7 +43,7 @@ Network Both VMs must be in the same local network
  [Kali Linux (Attacker)]  --->  [Windows 10 VM (Target)]  --->  [Splunk (Log Monitoring)]
  ```
 
-*Kali performs attacks on the Windows machine; Splunk monitors the logs.
+ *Kali performs attacks on the Windows machine; Splunk monitors the logs.*
 
 ⸻
 
